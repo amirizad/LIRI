@@ -1,0 +1,25 @@
+{
+  "name": "amirizad",
+  "version": "1.0.0",
+  "description": "This installation needed to send requests to the Twitter, Spotify and IMDB APIs.",
+  "main": "liri.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirizad/LIRI.git"
+  },
+  "author": "amirizad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amirizad/LIRI/issues"
+  },
+  "homepage": "https://github.com/amirizad/LIRI#readme",
+  "dependencies": {
+    "inquirer": "^3.0.6",
+    "request": "^2.81.0",
+    "spotify": "^0.3.0",
+    "twitter": "^1.7.0"
+  }
+}
