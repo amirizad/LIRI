@@ -34,10 +34,13 @@ function LunchApp(arg2, arg3){
             showList();
             break;
         default:
-            console.log("\nFor pick from the list -> *" +
-            "\nPlease use a valid command after 'node liri.js':" +
-            "\nFor Last 20 tweets -> my-tweets\nFor search for a song -> spotify-this-song '<song name here>'" + 
-            "\nFor search for a movie -> movie-this '<movie name here>'\nFor random search -> do-what-it-says" + 
+            console.log("\n**********" +
+            "\nPlease use a valid command after 'node liri.js':\n" +
+            "\n- For pick from the list -> *" +
+            "\n- For Last 20 tweets -> my-tweets" +
+            "\n- For search a song  -> spotify-this-song '<song name here>'" + 
+            "\n- For search a movie -> movie-this '<movie name here>'" +
+            "\n- For random search  -> do-what-it-says" + 
             "\n**********\n");
     };
 };
@@ -130,7 +133,48 @@ function doWhatItSays(){
 };
 
 function showList(){
-
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "What do you want LIRI to do for you?",
+            choices: ["Show tweets", "Spotify a Song", "Search for a Movie", "Do what it says!"],
+            name: "LIRI"
+        },
+    ]).then(function(choice) {
+        var  thisLIRI = choice.LIRI;
+        switch(thisLIRI){
+            case 'Spotify a Song':
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "What is your desired song?",
+                        name: "song"
+                    }
+                ]).then(function(song) {
+                    LunchApp('spotify-this-song', song.song);
+                });
+                break;
+            case 'Search for a Movie':
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "What is your desired movie?",
+                        name: "movie"
+                    }
+                ]).then(function(movie) {
+                    LunchApp('movie-this', movie.movie);
+                });
+                break;
+            default:
+                if (thisLIRI === 'Show tweets'){
+                    thisLIRI = 'my-tweets';
+                };
+                if (thisLIRI === 'Do what it says!'){
+                    thisLIRI = 'do-what-it-says';
+                };
+                LunchApp(thisLIRI, '');
+        };
+    });
 };
 
 function logResult(txt){
@@ -139,6 +183,6 @@ function logResult(txt){
         if (err) {
             return console.log(err);
         }
-        console.log("SAVED");
+        console.log("Result SAVED in log.txt");
     });
 };
