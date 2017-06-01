@@ -3,11 +3,23 @@ var fs = require("fs");
 var inquirer = require('inquirer');
 var request = require("request");
 var Twitter = require('twitter');
-var spotify = require('spotify');
 var tKeys = require('./keys.js');
 var client = new Twitter(tKeys.twitterKeys);
+var SpotifyWebApi = require('spotify-web-api-node');
+var spotifyApi = new SpotifyWebApi(tKeys.spotifyKeys);
+var omdbapiKey = tKeys.omdbapiKey.key;
 
-LunchApp(process.argv[2], process.argv[3]);
+spotifyApi.clientCredentialsGrant()
+  .then(function(data) {
+    // console.log('The access token expires in ' + data.body['expires_in']);
+    // console.log('The access token is ' + data.body['access_token']);
+    spotifyApi.setAccessToken(data.body['access_token']);
+    LunchApp(process.argv[2], process.argv[3]);
+  }, function(err) {
+        console.log('Something went wrong when retrieving an access token', err);
+  });
+
+
 
 function LunchApp(arg2, arg3){
     switch(arg2){
@@ -15,6 +27,7 @@ function LunchApp(arg2, arg3){
             myTweets();
             break;
         case 'spotify-this-song':
+        debugger;
             if ( !arg3 ){
                 arg3 = 'The Sign Ace of Base';
             }
@@ -63,7 +76,7 @@ function myTweets(){
 };
 
 function movieThis(movieName){
-    var url = 'http://www.omdbapi.com/?t=' + movieName + '&apikey=40e9cece';
+    var url = 'http://www.omdbapi.com/?t=' + movieName + '&apikey=' + omdbapiKey;
     request(url, function (error, response, data) {
         if(error){
             console.log('Something went wrong while SEARCHING...');
@@ -90,12 +103,10 @@ function movieThis(movieName){
 };
 
 function spotifyThisSong(song){
-    spotify.search({ type: 'track', query: song }, function(err, data) {
-        if ( err ) {
-            console.log('Error occurred: ' + err);
-            return;
-        }
-        var songs = data.tracks.items;
+    spotifyApi.searchTracks(song)
+    .then(function(data) {
+        // console.log('Search by "' + song + '"', data.body);
+        var songs = data.body.tracks.items;
         var songsLen = songs.length;
         if ( songsLen === 0 ) {
             spotifyThisSong('The Sign Ace of Base');
@@ -119,7 +130,11 @@ function spotifyThisSong(song){
             }
             logResult(spotifyTxt);
         };
-    });    
+
+
+    }, function(err) {
+        console.log('Error occurred: ' + err);
+    });
 };
 
 function doWhatItSays(){
