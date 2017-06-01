@@ -27,7 +27,6 @@ function LunchApp(arg2, arg3){
             myTweets();
             break;
         case 'spotify-this-song':
-        debugger;
             if ( !arg3 ){
                 arg3 = 'The Sign Ace of Base';
             }
@@ -105,7 +104,6 @@ function movieThis(movieName){
 function spotifyThisSong(song){
     spotifyApi.searchTracks(song)
     .then(function(data) {
-        // console.log('Search by "' + song + '"', data.body);
         var songs = data.body.tracks.items;
         var songsLen = songs.length;
         if ( songsLen === 0 ) {
